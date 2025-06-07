@@ -41,7 +41,7 @@ public class SQLitePrimitivesDB {
                 onCreate(writableDb: db)
             
             case .failure(let error):
-                print("Error opening database: \(error.localizedDescription)")
+                Logger.shared.d("ELFIE","Error opening database: \(error.localizedDescription)")
         }
     }
     static let shared = SQLitePrimitivesDB()
@@ -206,12 +206,12 @@ public class SQLitePrimitivesDB {
             case .failure(let error):
                 _ = execute(db: db, query: "ROLLBACK")
                 close(db: db)
-                print("Error setting value: \(error.localizedDescription)")
+                Logger.shared.d("ELFIE","Error setting value: \(error.localizedDescription)")
                 return .failure(error)
             }
 
         case .failure(let error):
-            print("Error getting writable database: \(error.localizedDescription)")
+            Logger.shared.d("ELFIE","Error getting writable database: \(error.localizedDescription)")
             return .failure(error)
         }
     }
@@ -687,7 +687,7 @@ public class SQLitePrimitivesDB {
         
         let firstFailure = results.first(where: { result in
             if case let .failure(error) = result {
-                print("Error removing all values: \(error.localizedDescription)")
+                Logger.shared.d("ELFIE","Error removing all values: \(error.localizedDescription)")
                 return true
             }
             return false

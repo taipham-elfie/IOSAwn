@@ -137,7 +137,7 @@ class BroadcastSender {
         silentAction: ActionReceived,
         whenFinished completionHandler: @escaping (Bool, Error?) -> Void
     ){
-        print("ELFIE DEBUG => BroadcastSender.sendBroadcast(silentAction)")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => BroadcastSender.sendBroadcast(silentAction)")
         silentAction.registerActionEvent(
             withLifeCycle:
                 LifeCycleManager
@@ -157,7 +157,7 @@ class BroadcastSender {
         backgroundAction: ActionReceived,
         whenFinished completionHandler: @escaping (Bool, Error?) -> Void
     ){
-        print("ELFIE DEBUG => BroadcastSender.sendBroadcast(backgroundAction)")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => BroadcastSender.sendBroadcast(backgroundAction)")
         backgroundAction.registerActionEvent(
             withLifeCycle:
                 LifeCycleManager
@@ -177,7 +177,7 @@ class BroadcastSender {
         silentAction actionReceived: ActionReceived,
         whenFinished completionHandler: @escaping (Bool, Error?) -> Void
     ){
-        print("ELFIE DEBUG => BroadcastSender.enqueue(silentAction)")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => BroadcastSender.enqueue(silentAction)")
         actionReceived.registerActionEvent(
             withLifeCycle:
                 LifeCycleManager
@@ -195,7 +195,7 @@ class BroadcastSender {
         silentBackgroundAction actionReceived: ActionReceived,
         whenFinished completionHandler: @escaping (Bool, Error?) -> Void
     ){
-        print("ELFIE DEBUG => BroadcastSender.enqueue(silentBackgroundAction)")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => BroadcastSender.enqueue(silentBackgroundAction)")
         actionReceived.registerActionEvent(
             withLifeCycle:
                 LifeCycleManager

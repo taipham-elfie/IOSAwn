@@ -29,12 +29,12 @@ class BackgroundService {
         SilentBackgroundAction silentAction: ActionReceived,
         withCompletionHandler completionHandler: @escaping (Bool, Error?) -> ()
     ){
-        print("ELFIE DEBUG => BackgroundService.enqueue()")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => BackgroundService.enqueue()")
         let start = DispatchTime.now()
         Logger.shared.d(BackgroundService.TAG, "A new Dart background service has started")
         
         let completionWithTimer:(Bool, Error?) -> () = { (success, error) in
-            print("ELFIE DEBUG => BackgroundService completion with timer: success=\(success)")
+            Logger.shared.d("ELFIE","ELFIE DEBUG => BackgroundService completion with timer: success=\(success)")
             let end = DispatchTime.now()
             let nanoTime = end.uptimeNanoseconds - start.uptimeNanoseconds
             let timeInterval:Double = Double(nanoTime) / 1_000_000
@@ -47,10 +47,10 @@ class BackgroundService {
             let backgroundCallback:Int64 = DefaultsManager.shared.backgroundCallback
             let actionCallback:Int64 = DefaultsManager.shared.actionCallback
             
-            print("ELFIE DEBUG => BackgroundService callbacks: background=\(backgroundCallback), action=\(actionCallback)")
+            Logger.shared.d("ELFIE","ELFIE DEBUG => BackgroundService callbacks: background=\(backgroundCallback), action=\(actionCallback)")
             
             if backgroundCallback == 0 {
-                print("ELFIE DEBUG => No valid background handler registered")
+                Logger.shared.d("ELFIE","ELFIE DEBUG => No valid background handler registered")
                 throw ExceptionFactory
                         .shared
                         .createNewAwesomeException(
@@ -61,7 +61,7 @@ class BackgroundService {
             }
             
             if actionCallback == 0 {
-                print("ELFIE DEBUG => No valid action callback handler registered")
+                Logger.shared.d("ELFIE","ELFIE DEBUG => No valid action callback handler registered")
                 throw ExceptionFactory
                         .shared
                         .createNewAwesomeException(
@@ -72,7 +72,7 @@ class BackgroundService {
             }
             
             if Thread.isMainThread {
-                print("ELFIE DEBUG => Running on main thread")
+                Logger.shared.d("ELFIE","ELFIE DEBUG => Running on main thread")
                 mainThreadServiceExecution(
                     SilentBackgroundAction: silentAction,
                     backgroundCallback: backgroundCallback,
@@ -80,7 +80,7 @@ class BackgroundService {
                     withCompletionHandler: completionWithTimer)
             }
             else {
-                print("ELFIE DEBUG => Running on background thread")
+                Logger.shared.d("ELFIE","ELFIE DEBUG => Running on background thread")
                 try backgroundThreadServiceExecution(
                     SilentBackgroundAction: silentAction,
                     backgroundCallback: backgroundCallback,
@@ -89,7 +89,7 @@ class BackgroundService {
             }
             
         } catch {
-            print("ELFIE DEBUG => Error in BackgroundService.enqueue: \(error.localizedDescription)")
+            Logger.shared.d("ELFIE","ELFIE DEBUG => Error in BackgroundService.enqueue: \(error.localizedDescription)")
             if error is AwesomeNotificationsException {
                 completionWithTimer(false, error)
             } else {
@@ -112,12 +112,12 @@ class BackgroundService {
         actionCallback:Int64,
         withCompletionHandler completionHandler: @escaping (Bool, Error?) -> ()
     ){
-        print("ELFIE DEBUG => mainThreadServiceExecution()")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => mainThreadServiceExecution()")
         let silentActionRequest:SilentActionRequest =
                 SilentActionRequest(
                     actionReceived: silentAction,
                     handler: { success in
-                        print("ELFIE DEBUG => SilentActionRequest handler: success=\(success)")
+                        Logger.shared.d("ELFIE","ELFIE DEBUG => SilentActionRequest handler: success=\(success)")
                         completionHandler(success, nil)
                     })
         
@@ -126,7 +126,7 @@ class BackgroundService {
                     .backgroundClassType!
                     .init()
         
-        print("ELFIE DEBUG => Running background process through BackgroundExecutor")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => Running background process through BackgroundExecutor")
         backgroundExecutor
             .runBackgroundProcess(
                 silentActionRequest: silentActionRequest,
@@ -140,7 +140,7 @@ class BackgroundService {
         actionCallback:Int64,
         withCompletionHandler completionHandler: @escaping (Bool, Error?) -> ()
     ) throws {
-        print("ELFIE DEBUG => backgroundThreadServiceExecution()")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => backgroundThreadServiceExecution()")
         let group = DispatchGroup()
         group.enter()
         
@@ -148,21 +148,21 @@ class BackgroundService {
                 SilentActionRequest(
                     actionReceived: silentAction,
                     handler: { success in
-                        print("ELFIE DEBUG => SilentActionRequest handler: success=\(success)")
+                        Logger.shared.d("ELFIE","ELFIE DEBUG => SilentActionRequest handler: success=\(success)")
                         group.leave()
                     })
         
         let workItem:DispatchWorkItem = DispatchWorkItem {
-            print("ELFIE DEBUG => WorkItem executing")
+            Logger.shared.d("ELFIE","ELFIE DEBUG => WorkItem executing")
             DispatchQueue.global(qos: .background).async {
-                print("ELFIE DEBUG => Inside global background queue")
+                Logger.shared.d("ELFIE","ELFIE DEBUG => Inside global background queue")
                 
                 let backgroundExecutor:BackgroundExecutor =
                         AwesomeNotifications
                             .backgroundClassType!
                             .init()
                 
-                print("ELFIE DEBUG => Running background process through BackgroundExecutor")
+                Logger.shared.d("ELFIE","ELFIE DEBUG => Running background process through BackgroundExecutor")
                 backgroundExecutor
                     .runBackgroundProcess(
                         silentActionRequest: silentActionRequest,
@@ -174,7 +174,7 @@ class BackgroundService {
         
         workItem.perform()
         if group.wait(timeout: DispatchTime.now() + .seconds(10)) == .timedOut {
-            print("ELFIE DEBUG => Background service timeout reached")
+            Logger.shared.d("ELFIE","ELFIE DEBUG => Background service timeout reached")
             workItem.cancel()
             throw ExceptionFactory
                     .shared

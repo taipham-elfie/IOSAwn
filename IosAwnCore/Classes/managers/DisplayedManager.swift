@@ -163,7 +163,7 @@ public class DisplayedManager : EventManager {
                 displayedDates.insert(nextValidDate, at: 0)
             }
             
-            print("displayed recovered: \(nextValidDate)")
+            Logger.shared.d("ELFIE","displayed recovered: \(nextValidDate)")
             
             if !scheduleModel.isRepeated() { break }
             if currentValidDate == nextValidDate { break }

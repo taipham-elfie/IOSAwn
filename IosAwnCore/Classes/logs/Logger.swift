@@ -8,6 +8,13 @@
 import Foundation
 import os.log
 
+// Function for logging that works in both debug and release builds
+// and ensures visibility in syslog
+public func AWNLogger(type: String, className: String, message: String, line: Int = #line) {
+    // Use NSLog which reliably writes to syslog in all build configurations
+    NSLog("AWN/%@: %@ (%@:%d)", type, message, className, line)
+}
+
 public class Logger {
     public static let shared = LoggerImpl()
     private init() {}
@@ -25,18 +32,18 @@ public protocol LoggerProtocol {
 public class LoggerImpl: LoggerProtocol {
     
     public func d(_ className: String, _ message: String, line: Int = #line) {
-        os_log("D/Swift: \u{001B}[32m[AWESOME NOTIFICATIONS]\u{001B}[0m %@ (%@:%d)", type: .debug, message, className, line)
+        AWNLogger(type: "DEBUG", className: className, message: message, line: line)
     }
 
     public func e(_ className: String, _ message: String, line: Int = #line) {
-        os_log("E/Swift: \u{001B}[31m[AWESOME NOTIFICATIONS] %@ (%@:%d)\u{001B}[0m", type: .error, message, className, line)
+        AWNLogger(type: "ERROR", className: className, message: message, line: line)
     }
 
     public func i(_ className: String, _ message: String, line: Int = #line) {
-        os_log("I/Swift: \u{001B}[94m[AWESOME NOTIFICATIONS] %@ (%@:%d)\u{001B}[0m", type: .info, message, className, line)
+        AWNLogger(type: "INFO", className: className, message: message, line: line)
     }
 
     public func w(_ className: String, _ message: String, line: Int = #line) {
-        os_log("W/Swift: \u{001B}[33m[AWESOME NOTIFICATIONS] %@ (%@:%d)\u{001B}[0m", type: .fault, message, className, line)
+        AWNLogger(type: "WARNING", className: className, message: message, line: line)
     }
 }

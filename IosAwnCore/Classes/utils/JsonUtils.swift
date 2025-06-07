@@ -32,7 +32,7 @@ public class JsonUtils {
                 let decodedData = try JSONSerialization.jsonObject(with: data, options: [])
                 return decodedData as? [String: Any]
             } catch {
-                print("Error parsing JSON: \(error)")
+                Logger.shared.d("ELFIE","Error parsing JSON: \(error)")
             }
         }
         
@@ -48,7 +48,7 @@ public class JsonUtils {
                 let decodedData = try JSONSerialization.jsonObject(with: data, options: [])
                 return decodedData as? [String]
             } catch {
-                print("Error parsing JSON: \(error)")
+                Logger.shared.d("ELFIE","Error parsing JSON: \(error)")
             }
         }
         return nil

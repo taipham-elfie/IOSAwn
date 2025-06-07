@@ -119,7 +119,7 @@ public class NotificationActionReceiver {
                                 message: "The action content doesn't contain any awesome information",
                                 detailedCode: ExceptionCode.DETAILED_INVALID_ARGUMENTS + ".addNewActionEvent.jsonData")
                     } else {
-                        print("ELFIE DEBUG => NotificationActionReceiver found Firebase message with gcm.message_id")
+                        Logger.shared.d("ELFIE","ELFIE DEBUG => NotificationActionReceiver found Firebase message with gcm.message_id")
                     }
                 }
                 
@@ -249,7 +249,7 @@ public class NotificationActionReceiver {
         switch actionReceived.actionType! {
             
             case .Default:
-                print("ELFIE DEBUG => Processing Default action type")
+                Logger.shared.d("ELFIE","ELFIE DEBUG => Processing Default action type")
                 BroadcastSender
                     .shared
                     .sendBroadcast(
@@ -258,7 +258,7 @@ public class NotificationActionReceiver {
                 break
                 
             case .KeepOnTop:
-                print("ELFIE DEBUG => Processing KeepOnTop action type")
+                Logger.shared.d("ELFIE","ELFIE DEBUG => Processing KeepOnTop action type")
                 if LifeCycleManager.shared.currentLifeCycle != .AppKilled {
                     BroadcastSender
                         .shared
@@ -276,7 +276,7 @@ public class NotificationActionReceiver {
                 break
                 
             case .SilentAction:
-                print("ELFIE DEBUG => Processing SilentAction action type")
+                Logger.shared.d("ELFIE","ELFIE DEBUG => Processing SilentAction action type")
                 if LifeCycleManager.shared.currentLifeCycle != .AppKilled {
                     BroadcastSender
                         .shared
@@ -294,7 +294,7 @@ public class NotificationActionReceiver {
                 break
                 
             case .SilentBackgroundAction:
-                print("ELFIE DEBUG => Processing SilentBackgroundAction action type")
+                Logger.shared.d("ELFIE","ELFIE DEBUG => Processing SilentBackgroundAction action type")
                 BroadcastSender
                     .shared
                     .enqueue(

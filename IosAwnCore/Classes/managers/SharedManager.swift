@@ -23,7 +23,7 @@ public class SharedManager {
     
     private func refreshObjects(){
          guard let userDefaults = _userDefaults else {
-            print("UserDefaults not available")
+            Logger.shared.d("ELFIE","UserDefaults not available")
             return
         }
         objectList = userDefaults.dictionary(forKey: tag) ?? [:]
@@ -31,7 +31,7 @@ public class SharedManager {
     
     private func updateObjects(){
         guard let userDefaults = _userDefaults else {
-            print("UserDefaults not available")
+            Logger.shared.d("ELFIE","UserDefaults not available")
             return
         }
         userDefaults.removeObject(forKey: tag)

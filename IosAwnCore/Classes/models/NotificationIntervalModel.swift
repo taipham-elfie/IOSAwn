@@ -137,7 +137,7 @@ public class NotificationIntervalModel : NotificationScheduleModel {
         
         let nextRealDate = RealDateTime.init(fromDate: nextValidDate, inTimeZone: timeZone)
         if nextRealDate < referenceDate {
-            print("\(nextRealDate) < \(referenceDate)")
+            Logger.shared.d("ELFIE","\(nextRealDate) < \(referenceDate)")
             return nil
         }
         

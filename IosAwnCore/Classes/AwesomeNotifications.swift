@@ -42,7 +42,7 @@ public class AwesomeNotifications:
     // ************************** CONSTRUCTOR ***********************************
         
     public override init() {
-        print("ELFIE DEBUG => AwesomeNotifications.init()")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => AwesomeNotifications.init()")
         super.init()
         
         AwesomeNotifications.debug = isApplicationInDebug()
@@ -67,7 +67,7 @@ public class AwesomeNotifications:
     
     static var areDefaultsLoaded = false
     public static func loadExtensions() throws {
-        print("ELFIE DEBUG => AwesomeNotifications.loadExtensions()")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => AwesomeNotifications.loadExtensions()")
         if areDefaultsLoaded {
             return
         }
@@ -89,7 +89,7 @@ public class AwesomeNotifications:
     
     private var isTheMainInstance = false
     public func attachAsMainInstance(usingAwesomeEventListener listener: AwesomeEventListener){
-        print("ELFIE DEBUG => attachAsMainInstance()")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => attachAsMainInstance()")
         if self.isTheMainInstance {
             return
         }
@@ -107,7 +107,7 @@ public class AwesomeNotifications:
     }
     
     public func detachAsMainInstance(listener: AwesomeEventListener){
-        print("ELFIE DEBUG => detachAsMainInstance()")
+        Logger.shared.d("ELFIE"," detachAsMainInstance()")
         if !self.isTheMainInstance {
             return
         }
@@ -125,7 +125,7 @@ public class AwesomeNotifications:
     }
     
     public func dispose(){
-        print("ELFIE DEBUG => dispose()")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => dispose()")
         if !SwiftUtils.isRunningOnExtension() {
             LifeCycleManager
                 .shared
@@ -134,7 +134,7 @@ public class AwesomeNotifications:
     }
     
     public func initialize() {
-        print("ELFIE DEBUG => initialize()")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => initialize()")
         AwesomeNotifications.initialValues.removeAll()
         AwesomeNotifications.initialValues.merge(
                 Definitions.initialValues,
@@ -142,12 +142,12 @@ public class AwesomeNotifications:
     }
     
     deinit {
-        print("ELFIE DEBUG => deinit")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => deinit")
         NotificationCenter.default.removeObserver(self)
     }
     
     func activateiOSNotifications(){
-        print("ELFIE DEBUG => activateiOSNotifications()")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => activateiOSNotifications()")
         
         let categoryObject = UNNotificationCategory(
             identifier: Definitions.DEFAULT_CATEGORY_IDENTIFIER.uppercased(),
@@ -169,22 +169,22 @@ public class AwesomeNotifications:
     // ***********************  EVENT INTERFACES  *******************************
     
     public func onNewNotificationReceived(eventName: String, notificationReceived: NotificationReceived) {
-        print("ELFIE DEBUG => onNewNotificationReceived(\(eventName))")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => onNewNotificationReceived(\(eventName))")
         notifyNotificationEvent(eventName: eventName, notificationReceived: notificationReceived)
     }
     
     public func onNewActionReceived(fromEventNamed eventName: String, withActionReceived actionReceived: ActionReceived) {
-        print("ELFIE DEBUG => onNewActionReceived(\(eventName))")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => onNewActionReceived(\(eventName))")
         notifyActionEvent(fromEventNamed: eventName, withActionReceived: actionReceived)
     }
     
     public func onNewActionReceivedWithInterruption(fromEventNamed eventName: String, withActionReceived actionReceived: ActionReceived) -> Bool {
-        print("ELFIE DEBUG => onNewActionReceivedWithInterruption(\(eventName))")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => onNewActionReceivedWithInterruption(\(eventName))")
         return false
     }
     
     public func onNewLifeCycleEvent(lifeCycle: NotificationLifeCycle) {
-        print("ELFIE DEBUG => onNewLifeCycleEvent(\(lifeCycle))")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => onNewLifeCycleEvent(\(lifeCycle))")
         
         if !isTheMainInstance {
             return
@@ -244,19 +244,19 @@ public class AwesomeNotifications:
     private lazy var notificationEventListeners = [AwesomeNotificationEventListener]()
     
     public func subscribeOnNotificationEvents(listener:AwesomeNotificationEventListener) {
-        print("ELFIE DEBUG => subscribeOnNotificationEvents()")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => subscribeOnNotificationEvents()")
         notificationEventListeners.append(listener)
     }
     
     public func unsubscribeOnNotificationEvents(listener:AwesomeNotificationEventListener) {
-        print("ELFIE DEBUG => unsubscribeOnNotificationEvents()")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => unsubscribeOnNotificationEvents()")
         if let index = notificationEventListeners.firstIndex(where: {$0 === listener}) {
             notificationEventListeners.remove(at: index)
         }
     }
     
     private func notifyNotificationEvent(eventName:String, notificationReceived:NotificationReceived){
-        print("ELFIE DEBUG => notifyNotificationEvent(\(eventName))")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => notifyNotificationEvent(\(eventName))")
         notifyAwesomeEvent(eventType: eventName, content: notificationReceived.toMap())
         for listener in notificationEventListeners {
             listener.onNewNotificationReceived(
@@ -270,19 +270,19 @@ public class AwesomeNotifications:
     private lazy var notificationActionListeners = [AwesomeActionEventListener]()
     
     public func subscribeOnActionEvents(listener:AwesomeActionEventListener) {
-        print("ELFIE DEBUG => subscribeOnActionEvents()")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => subscribeOnActionEvents()")
         notificationActionListeners.append(listener)
     }
     
     public func unsubscribeOnActionEvents(listener:AwesomeActionEventListener) {
-        print("ELFIE DEBUG => unsubscribeOnActionEvents()")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => unsubscribeOnActionEvents()")
         if let index = notificationActionListeners.firstIndex(where: {$0 === listener}) {
             notificationActionListeners.remove(at: index)
         }
     }
     
     private func notifyActionEvent(fromEventNamed eventName:String, withActionReceived actionReceived:ActionReceived){
-        print("ELFIE DEBUG => notifyActionEvent(\(eventName))")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => notifyActionEvent(\(eventName))")
         notifyAwesomeEvent(eventType: eventName, content: actionReceived.toMap())
         for listener in notificationActionListeners {
             listener
@@ -297,19 +297,19 @@ public class AwesomeNotifications:
     private lazy var awesomeEventListeners = [AwesomeEventListener]()
     
     public func subscribeOnAwesomeNotificationEvents(listener:AwesomeEventListener) {
-        print("ELFIE DEBUG => subscribeOnAwesomeNotificationEvents()")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => subscribeOnAwesomeNotificationEvents()")
         awesomeEventListeners.append(listener)
     }
     
     public func unsubscribeOnAwesomeNotificationEvents(listener:AwesomeEventListener) {
-        print("ELFIE DEBUG => unsubscribeOnAwesomeNotificationEvents()")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => unsubscribeOnAwesomeNotificationEvents()")
         if let index = awesomeEventListeners.firstIndex(where: {$0 === listener}) {
             awesomeEventListeners.remove(at: index)
         }
     }
     
     private func notifyAwesomeEvent(eventType: String, content: [String : Any?]){
-        print("ELFIE DEBUG => notifyAwesomeEvent(\(eventType))")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => notifyAwesomeEvent(\(eventType))")
         for listener in awesomeEventListeners {
             listener.onNewAwesomeEvent(eventType: eventType, content: content)
         }
@@ -391,7 +391,7 @@ public class AwesomeNotifications:
         backgroundHandle:Int64,
         debug:Bool
     ) throws {
-        print("ELFIE DEBUG => initialize(defaultIconPath:channels:backgroundHandle:debug:)")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => initialize(defaultIconPath:channels:backgroundHandle:debug:)")
         
         setDefaultConfigurations (
             defaultIconPath: defaultIconPath,
@@ -421,7 +421,7 @@ public class AwesomeNotifications:
     }
     
     private func setDefaultConfigurations(defaultIconPath:String?, backgroundHandle:Int64?) {
-        print("ELFIE DEBUG => setDefaultConfigurations(defaultIconPath:\(defaultIconPath ?? "nil"), backgroundHandle:\(backgroundHandle ?? 0))")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => setDefaultConfigurations(defaultIconPath:\(defaultIconPath ?? "nil"), backgroundHandle:\(backgroundHandle ?? 0))")
         DefaultsManager.shared.defaultIcon = defaultIconPath
         DefaultsManager.shared.backgroundCallback = backgroundHandle ?? 0
     }
@@ -538,7 +538,7 @@ public class AwesomeNotifications:
     private var _originalNotificationCenterDelegate: UNUserNotificationCenterDelegate?
     
     @objc public func didFinishLaunch(_ application: UIApplication) {
-        print("ELFIE DEBUG => didFinishLaunch()")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => didFinishLaunch()")
         
         UNUserNotificationCenter.current().delegate = self
         
@@ -562,7 +562,7 @@ public class AwesomeNotifications:
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ){
-        print("ELFIE DEBUG => userNotificationCenter:didReceive(\(response.notification.request.identifier))")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => userNotificationCenter:didReceive(\(response.notification.request.identifier))")
         Logger.shared.d(TAG, "Notification Category Identifier (action): \(response.notification.request.content.categoryIdentifier)")
         do {
             let buttonKeyPressed = response.actionIdentifier == UNNotificationDefaultActionIdentifier.description ?
@@ -571,7 +571,7 @@ public class AwesomeNotifications:
             switch response.actionIdentifier {
             
                 case UNNotificationDismissActionIdentifier.description:
-                    print("ELFIE DEBUG => Dismiss action identified")
+                    Logger.shared.d("ELFIE","ELFIE DEBUG => Dismiss action identified")
                     try DismissedNotificationReceiver
                         .shared
                         .addNewDismissEvent(
@@ -592,7 +592,7 @@ public class AwesomeNotifications:
                             })
                     
                 default:
-                    print("ELFIE DEBUG => Default action identified")
+                    Logger.shared.d("ELFIE","ELFIE DEBUG => Default action identified")
                     try NotificationActionReceiver
                         .shared
                         .addNewActionEvent(
@@ -613,7 +613,7 @@ public class AwesomeNotifications:
                             })
             }
         } catch {
-            print("ELFIE DEBUG => Error in userNotificationCenter:didReceive - \(error.localizedDescription)")
+            Logger.shared.d("ELFIE","ELFIE DEBUG => Error in userNotificationCenter:didReceive - \(error.localizedDescription)")
             if !(error is AwesomeNotificationsException) {
                 ExceptionFactory
                     .shared
@@ -644,7 +644,7 @@ public class AwesomeNotifications:
         willPresent notification: UNNotification,
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ){
-        print("ELFIE DEBUG => userNotificationCenter:willPresent(\(notification.request.identifier))")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => userNotificationCenter:willPresent(\(notification.request.identifier))")
         let jsonData:[String : Any?] =
                 extractNotificationJsonMap(
                     fromContent: notification.request.content)
@@ -661,7 +661,7 @@ public class AwesomeNotifications:
                     .showNotificationOnStatusBar(
                         withNotificationModel: notificationModel,
                         whenFinished: { (notificationDisplayed:Bool, mustPlaySound:Bool) in
-                            print("ELFIE DEBUG => StatusBarManager callback - displayed:\(notificationDisplayed), sound:\(mustPlaySound)")
+                            Logger.shared.d("ELFIE","ELFIE DEBUG => StatusBarManager callback - displayed:\(notificationDisplayed), sound:\(mustPlaySound)")
                             
                             if !notificationDisplayed && self._originalNotificationCenterDelegate != nil {
                                 self._originalNotificationCenterDelegate?
@@ -685,7 +685,7 @@ public class AwesomeNotifications:
                             }
                         })
             } catch {
-                print("ELFIE DEBUG => Error in userNotificationCenter:willPresent - \(error.localizedDescription)")
+                Logger.shared.d("ELFIE","ELFIE DEBUG => Error in userNotificationCenter:willPresent - \(error.localizedDescription)")
                 if !(error is AwesomeNotificationsException) {
                     ExceptionFactory
                         .shared
@@ -700,7 +700,7 @@ public class AwesomeNotifications:
             
         }
         else {
-            print("ELFIE DEBUG => No notification model from json data")
+            Logger.shared.d("ELFIE","ELFIE DEBUG => No notification model from json data")
             if _originalNotificationCenterDelegate != nil {
                 _originalNotificationCenterDelegate?
                     .userNotificationCenter?(
@@ -724,14 +724,14 @@ public class AwesomeNotifications:
                     dismissedHandle: DefaultsManager.shared.dismissedCallback
                 )
             
-            print("ELFIE DEBUG => Recovered \(lostEvents.count) lost events")
+            Logger.shared.d("ELFIE","ELFIE DEBUG => Recovered \(lostEvents.count) lost events")
             for lostEvent in lostEvents {
                 notifyNotificationEvent(
                     eventName: lostEvent.eventName,
                     notificationReceived: lostEvent.notificationContent)
             }
         } catch {
-            print("ELFIE DEBUG => Error recovering lost events - \(error.localizedDescription)")
+            Logger.shared.d("ELFIE","ELFIE DEBUG => Error recovering lost events - \(error.localizedDescription)")
             if !(error is AwesomeNotificationsException) {
                 ExceptionFactory
                     .shared
@@ -748,17 +748,17 @@ public class AwesomeNotifications:
     // *****************************  EXTRACT NOTIFICATION METHODS  **********************************
     
     private func extractNotificationJsonMap(fromContent content: UNNotificationContent) -> [String : Any?]{
-        print("ELFIE DEBUG => extractNotificationJsonMap()")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => extractNotificationJsonMap()")
         
         var jsonMap:[String : Any?]
         
         if(content.userInfo[Definitions.NOTIFICATION_JSON] != nil){
-            print("ELFIE DEBUG => Notification JSON found in userInfo")
+            Logger.shared.d("ELFIE","ELFIE DEBUG => Notification JSON found in userInfo")
             let jsonData:String = content.userInfo[Definitions.NOTIFICATION_JSON] as! String
             jsonMap = JsonUtils.fromJson(jsonData) ?? [:]
         }
         else {
-            print("ELFIE DEBUG => Extracting notification from userInfo directly")
+            Logger.shared.d("ELFIE","ELFIE DEBUG => Extracting notification from userInfo directly")
             jsonMap = content.userInfo as! [String : Any?]
             
             if(jsonMap[Definitions.NOTIFICATION_MODEL_CONTENT] is String){
@@ -783,7 +783,7 @@ public class AwesomeNotifications:
         fromNotificationModel notificationModel: NotificationModel,
         afterCreated completionHandler: @escaping (Bool, UNMutableNotificationContent?, Error?) -> ()
     ) throws {
-        print("ELFIE DEBUG => createNotification()")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => createNotification()")
         try NotificationSenderAndScheduler
                 .send(
                     createdSource: NotificationSource.Local,
@@ -869,7 +869,7 @@ public class AwesomeNotifications:
     }
     
     public func getInitialAction(removeFromEvents:Bool, completionHandler: @escaping (ActionReceived?) -> Void) {
-        print("ELFIE DEBUG => getInitialAction(removeFromEvents:\(removeFromEvents))")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => getInitialAction(removeFromEvents:\(removeFromEvents))")
         if AwesomeNotifications.didFinishLaunch {
             completionHandler(ActionManager.shared.getInitialAction(removeFromEvents: removeFromEvents))
             return
@@ -881,7 +881,7 @@ public class AwesomeNotifications:
     // *****************************  CANCELATION METHODS  **********************************
     
     public func dismissNotification(byId id: Int) -> Bool {
-        print("ELFIE DEBUG => dismissNotification(byId:\(id))")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => dismissNotification(byId:\(id))")
         let success:Bool =
                 CancellationManager
                     .shared
@@ -1003,7 +1003,7 @@ public class AwesomeNotifications:
     // *****************************  PERMISSION METHODS  **********************************
     
     public func areNotificationsGloballyAllowed(whenCompleted completionHandler: @escaping (Bool) -> ()) {
-        print("ELFIE DEBUG => areNotificationsGloballyAllowed()")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => areNotificationsGloballyAllowed()")
         PermissionManager
             .shared
             .areNotificationsGloballyAllowed(
@@ -1011,7 +1011,7 @@ public class AwesomeNotifications:
     }
     
     public func showNotificationPage(whenUserReturns completionHandler: @escaping () -> ()){
-        print("ELFIE DEBUG => showNotificationPage()")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => showNotificationPage()")
         PermissionManager
             .shared
             .showNotificationConfigPage(
@@ -1037,7 +1037,7 @@ public class AwesomeNotifications:
         filteringByChannelKey channelKey:String?,
         whenGotResults completion: @escaping ([String]) -> ()
     ){
-        print("ELFIE DEBUG => arePermissionsAllowed(permissions:\(permissions), channelKey:\(channelKey ?? "nil"))")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => arePermissionsAllowed(permissions:\(permissions), channelKey:\(channelKey ?? "nil"))")
         PermissionManager
             .shared
             .arePermissionsAllowed(
@@ -1064,7 +1064,7 @@ public class AwesomeNotifications:
         filteringByChannelKey channelKey:String?,
         whenUserReturns completionHandler: @escaping ([String]) -> ()
     ) throws {
-        print("ELFIE DEBUG => requestUserPermissions(permissions:\(permissions), channelKey:\(channelKey ?? "nil"))")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => requestUserPermissions(permissions:\(permissions), channelKey:\(channelKey ?? "nil"))")
         try PermissionManager
             .shared
             .requestUserPermissions(

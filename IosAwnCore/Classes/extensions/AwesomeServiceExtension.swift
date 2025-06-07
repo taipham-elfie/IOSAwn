@@ -19,7 +19,7 @@ open class AwesomeServiceExtension: UNNotificationServiceExtension {
         _ request: UNNotificationRequest,
         withContentHandler contentHandler: @escaping (UNNotificationContent) -> Void
     ){
-        print("ELFIE DEBUG => AwesomeServiceExtension.didReceive(\(request.identifier))")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => AwesomeServiceExtension.didReceive(\(request.identifier))")
         self.contentHandler = contentHandler
         self.content = (request.content.mutableCopy() as? UNMutableNotificationContent)
 
@@ -28,7 +28,7 @@ open class AwesomeServiceExtension: UNNotificationServiceExtension {
             AwesomeNotifications.initialize()
             
             if(!StringUtils.shared.isNullOrEmpty(content.userInfo["gcm.message_id"] as? String)){
-                print("ELFIE DEBUG => Found Firebase notification with gcm.message_id: \(content.userInfo["gcm.message_id"] as? String ?? "nil")")
+                Logger.shared.d("ELFIE","ELFIE DEBUG => Found Firebase notification with gcm.message_id: \(content.userInfo["gcm.message_id"] as? String ?? "nil")")
                 Logger.shared.d(TAG, "New push notification received")
                 
                 let title:String? = content.title
@@ -40,7 +40,7 @@ open class AwesomeServiceExtension: UNNotificationServiceExtension {
                 }
                 
                 if content.userInfo[Definitions.NOTIFICATION_MODEL_CONTENT] == nil {
-                    print("ELFIE DEBUG => No NOTIFICATION_MODEL_CONTENT found, creating one")
+                    Logger.shared.d("ELFIE","ELFIE DEBUG => No NOTIFICATION_MODEL_CONTENT found, creating one")
                     Logger.shared.d(TAG, "Notification translated to awesome content")
                     
                     notificationModel = NotificationModel()
@@ -66,7 +66,7 @@ open class AwesomeServiceExtension: UNNotificationServiceExtension {
                     }
                 }
                 else {
-                    print("ELFIE DEBUG => NOTIFICATION_MODEL_CONTENT found, parsing it")
+                    Logger.shared.d("ELFIE","ELFIE DEBUG => NOTIFICATION_MODEL_CONTENT found, parsing it")
                     var mapData:[String:Any?] = [:]
                     
                     mapData[Definitions.NOTIFICATION_MODEL_CONTENT]  = JsonUtils.fromJson(content.userInfo[Definitions.NOTIFICATION_MODEL_CONTENT] as? String)
@@ -118,14 +118,14 @@ open class AwesomeServiceExtension: UNNotificationServiceExtension {
                 //return
                 
                 if let notificationModel = notificationModel {
-                    print("ELFIE DEBUG => Sending notification through NotificationSenderAndScheduler")
+                    Logger.shared.d("ELFIE","ELFIE DEBUG => Sending notification through NotificationSenderAndScheduler")
                     do {
                         try NotificationSenderAndScheduler.send(
                             createdSource: NotificationSource.Firebase,
                             notificationModel: notificationModel,
                             content: content,
                             completion: { sent, newContent ,error  in
-                                print("ELFIE DEBUG => NotificationSenderAndScheduler completion: sent=\(sent)")
+                                Logger.shared.d("ELFIE","ELFIE DEBUG => NotificationSenderAndScheduler completion: sent=\(sent)")
                                 
                                 if sent {
                                     contentHandler(newContent ?? content)
@@ -142,18 +142,18 @@ open class AwesomeServiceExtension: UNNotificationServiceExtension {
                                                 .currentLifeCycle
                         )
                     } catch {
-                        print("ELFIE DEBUG => Error sending notification: \(error.localizedDescription)")
+                        Logger.shared.d("ELFIE","ELFIE DEBUG => Error sending notification: \(error.localizedDescription)")
                     }
                 }
             } else {
-                print("ELFIE DEBUG => No gcm.message_id found, this is not a Firebase notification")
+                Logger.shared.d("ELFIE","ELFIE DEBUG => No gcm.message_id found, this is not a Firebase notification")
             }
             contentHandler(content)
         }
     }
     
     public override func serviceExtensionTimeWillExpire() {
-        print("ELFIE DEBUG => serviceExtensionTimeWillExpire()")
+        Logger.shared.d("ELFIE","ELFIE DEBUG => serviceExtensionTimeWillExpire()")
         // Called just before the extension will be terminated by the system.
         // Use this as an opportunity to deliver your "best attempt" at modified content, otherwise the original push payload will be used.
         if let contentHandler = contentHandler, let content =  content {
