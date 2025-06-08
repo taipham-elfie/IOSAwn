@@ -12,7 +12,7 @@ import os.log
 // and ensures visibility in syslog
 public func AWNLogger(type: String, className: String, message: String, line: Int = #line) {
     // Use NSLog which reliably writes to syslog in all build configurations
-    NSLog("AWN/%@: %@ (%@:%d)", type, message, className, line)
+    NSLog("AWN ELFIE /%@: %@ (%@:%d)", type, message, className, line)
 }
 
 public class Logger {
