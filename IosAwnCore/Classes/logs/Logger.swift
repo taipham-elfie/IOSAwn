@@ -12,7 +12,12 @@ import os.log
 // and ensures visibility in syslog
 public func AWNLogger(type: String, className: String, message: String, line: Int = #line) {
     // Use NSLog which reliably writes to syslog in all build configurations
-    NSLog("AWN ELFIE /%@: %@ (%@:%d)", type, message, className, line)
+    if #available(iOS 14.0, *) {
+        let logger = Logger(subsystem: "co.elfie.staging.app", category: "AWN-ELFIE")
+        logger.log("\(message) [\(className)][\(line)]")
+    } else {
+        NSLog("AWN-ELFIE: %@", "\(message) [\(className)][\(line)]")
+    }
 }
 
 public class Logger {
