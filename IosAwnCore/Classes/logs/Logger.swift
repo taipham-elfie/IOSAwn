@@ -7,16 +7,28 @@
 
 import Foundation
 import os.log
+import os
 
 // Function for logging that works in both debug and release builds
 // and ensures visibility in syslog
 public func AWNLogger(type: String, className: String, message: String, line: Int = #line) {
     // Use NSLog which reliably writes to syslog in all build configurations
     if #available(iOS 14.0, *) {
-        let logger = Logger(subsystem: "co.elfie.staging.app", category: "AWN-ELFIE")
-        logger.log("\(message) [\(className)][\(line)]")
+        let osLogger = os.Logger(subsystem: "co.elfie.staging.app", category: "AWN-ELFIE")
+        let logMessage = "\(message) [\(className)][\(line)]"
+        
+        switch type {
+        case "ERROR":
+            osLogger.error("\(logMessage)")
+        case "WARNING":
+            osLogger.warning("\(logMessage)")
+        case "INFO":
+            osLogger.info("\(logMessage)")
+        default:
+            osLogger.debug("\(logMessage)")
+        }
     } else {
-        NSLog("AWN-ELFIE: %@", "\(message) [\(className)][\(line)]")
+        NSLog("AWN-ELFIE/%@: %@", type, "\(message) [\(className)][\(line)]")
     }
 }
 
